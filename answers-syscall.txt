@@ -1,0 +1,7 @@
+（1）System calls Part A 部分，简单描述 trace 全流程。
+
+用户程序调用 trace(mask) 时，调用桩把 SYS_trace 编号放入 a7，执行 ecall 进入内核。内核的 syscall() 根据编号分发到 sys_trace()，该函数读取第一个参数，将掩码保存在当前进程的 trace_mask 中。trace 命令再通过 exec 运行目标程序，掩码仍保存在原进程结构中。每次系统调用结束后，syscall() 将返回值写入 trapframe->a0，并检查掩码中对应系统调用号的位；若该位为 1，则打印进程号、系统调用名称和返回值。fork 时子进程复制父进程的掩码，因此后续子进程也会被跟踪；其他进程不受影响。
+
+（2）kernel/syscall.h 是干什么的，如何起作用的？
+
+kernel/syscall.h 定义系统调用名称与编号之间的对应关系，例如 SYS_read 为 5、SYS_trace 为 22、SYS_sysinfo 为 23。用户态调用桩将相应编号放进 a7 后执行 ecall；内核从 trapframe->a7 读取编号，再以其为下标查找 syscalls[] 中的处理函数。trace 也用同一编号确定掩码中的位。用户态与内核态共用这些编号，才能把调用分发到正确的实现。
