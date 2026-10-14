@@ -112,6 +112,8 @@ sys_sysinfo(void){
 
   info.nproc=acquire_nproc();
   info.freemem=acquire_freemem();
+  safestrcpy(info.student_id, "24300240192", sizeof(info.student_id));
+  printf("student ID: %s\n", info.student_id);
   argaddr(0, &addr);
 
   if(copyout(p->pagetable, addr, (char *)&info, sizeof(info)) < 0)
