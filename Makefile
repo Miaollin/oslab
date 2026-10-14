@@ -80,7 +80,7 @@ endif
 
 QEMU = qemu-system-riscv64
 
-CC = $(TOOLPREFIX)gcc
+CC = $(TOOLPREFIX)gcc -march=rv64gc -mabi=lp64d
 AS = $(TOOLPREFIX)gas
 LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
@@ -188,6 +188,8 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
+	$U/_trace\
+	$U/_sysinfotest\
 
 
 
@@ -253,6 +255,10 @@ ifeq ($(LAB),net)
 UPROGS += \
 	$U/_nettests
 endif
+
+UPROGS += $U/_xargs
+UPROGS += $U/_log_stdout
+UPROGS += $U/_composites
 
 UEXTRA=
 ifeq ($(LAB),util)
